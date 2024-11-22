@@ -59,6 +59,6 @@ public class BookService {
     }
 
     public Iterable<Book> getBooksByCategory(Long categoryId) {
-        return bookRepository.findAll();
+        return bookRepository.findByCategoryId(categoryId);
     }
 }

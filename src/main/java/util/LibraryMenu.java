@@ -5,6 +5,7 @@ import model.BookCategory;
 import service.BookCategoryService;
 import service.BookService;
 
+import java.util.Optional;
 import java.util.Scanner;
 
 public class LibraryMenu {
@@ -47,7 +48,7 @@ public class LibraryMenu {
                     viewAllBookCategories();
                     break;
                 case 5:
-                    viewCategoriesWithBooks();
+                    viewCategoriesWithBooks(scanner);
                     break;
                 case 6:
                     addBook(scanner);
@@ -102,26 +103,39 @@ public class LibraryMenu {
         }
     }
 
-    private void viewCategoriesWithBooks() {
-        Iterable<BookCategory> categories = bookCategoryService.getCategoriesWithBooks();
-        System.out.println("Book Categories with at least one book:");
-        for (BookCategory category : categories) {
-            System.out.println(category.getId() + ". " + category.getName());
+    private void viewCategoriesWithBooks(Scanner scanner) {
+        System.out.print("Enter your category ID: ");
+        Long categoryId = scanner.nextLong();
+        scanner.nextLine();
+        Optional<BookCategory> category = bookCategoryService.findById(categoryId);
+        if (category.isPresent()) {
+            Iterable<Book> books = bookService.getBooksByCategory(categoryId);
+            System.out.println("Books in category '" + category.get().getName() + "':");
+            for (Book book : books) {
+                System.out.println(book.getId() + ". " + book.getTitle());
+            }
+        } else {
+            System.out.println("Invalid category ID.");
         }
     }
+
     private void addBook(Scanner scanner) {
         System.out.print("Enter book title: ");
         String title = scanner.nextLine();
         System.out.print("Enter category ID: ");
         Long categoryId = scanner.nextLong();
         scanner.nextLine();
-        Book book = new Book();
-        book.setTitle(title);
-        BookCategory category = new BookCategory();
-        category.setId(categoryId);
-        book.setCategory(category);
-        bookService.addBook(book);
-        System.out.println("Book added successfully.");
+        Optional<BookCategory> category = bookCategoryService.findById(categoryId);
+        if (category.isPresent()) {
+            Book book = new Book();
+            book.setTitle(title);
+            book.setCategory(category.get());
+            bookService.addBook(book);
+            System.out.println("Book added successfully.");
+        } else {
+            System.out.println("Invalid category ID. Book not added.");
+        }
+
     }
 
     private void deleteBook(Scanner scanner) {

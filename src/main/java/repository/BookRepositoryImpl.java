@@ -11,6 +11,8 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book> {
     }
 
     public Iterable<Book> findByCategoryId(Long categoryId) {
-        return null;
+        return entityManager.createQuery("SELECT b FROM Book b WHERE b.category.id = :categoryId", Book.class)
+                .setParameter("categoryId", categoryId)
+                .getResultList();
     }
 }

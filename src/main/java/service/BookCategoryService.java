@@ -42,4 +42,8 @@ public class BookCategoryService {
     public Iterable<BookCategory> getCategoriesWithBooks() {
         return bookCategoryRepository.findAll();
     }
+
+    public Optional<BookCategory> findById(Long id) {
+        return bookCategoryRepository.findById(id);
+    }
 }

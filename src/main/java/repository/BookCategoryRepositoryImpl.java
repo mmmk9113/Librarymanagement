@@ -10,7 +10,4 @@ public class BookCategoryRepositoryImpl extends BaseRepositoryImpl<BookCategory>
         this.entityManager = entityManager;
     }
 
-    public Iterable<BookCategory> findCategoriesWithBooks() {
-        return null;
-    }
 }
